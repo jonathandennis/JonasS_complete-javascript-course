@@ -21,9 +21,12 @@
             console.log('The end');
         }
 
-        first(); */
+        first(); 
+*/
+/*
 //////////////////////////////////////////////////
-// Older method to run asyncronously using callbacks
+// Older method to run asyncronously using callbacks. Creates "callback hell" with many multiple callbacks.
+
         function getRecipe() {
             setTimeout(() => {  // setTimeout to simulate pulling of data being pulled from separate server
                 const recipeID = [523, 883, 432, 974];
@@ -49,7 +52,147 @@
             }, 1500);
         }
         getRecipe();
+*/
+/*
+/////////////////////////////////////////
+//  Promises introduced for asycronous javascript to combat "callback hell"
+// Promise is an object that keeps track of whether a certain event has happened or not. Then determines what happens next.
 
+        const getIDs = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve([523, 883, 432, 974]);
+            }, 1500);
+        });
+
+        const getRecipe = recID => {
+            return new Promise((resolve, reject) => {
+                setTimeout(ID => {
+                    const recipe = {
+                    title: 'Fresh tomato pasta',
+                    publisher: 'Jonas'
+                };
+                resolve(`${ID}: ${recipe.title}`);
+                }, 1500, recID); 
+            });
+        };
+
+        const getRelated = publisher => {
+            return new Promise((resolve, reject) => {
+                setTimeout(pub => {
+                    const recipe = {
+                        title: 'Italian Pizza',
+                        publisher: 'Jonas'
+                    };
+                    resolve(`${pub}: ${recipe.title}`);
+                }, 1500, publisher);
+            });
+        };
+
+        getIDs
+        .then(IDs => {
+            console.log(IDs);
+            return getRecipe(IDs[2]);
+        })
+        .then(recipe => {
+            console.log(recipe);
+            return getRelated('Jonas');
+        })
+        .then(recipe => {
+            console.log(recipe);
+        })
+        .catch(error => {
+            console.log('Error!!');
+        });
+*/
+/*
+///////////////////////////////////////////////////
+// Async Await introduced in ES8 to make it a lot easier for developers to consume promises
+// (the 3) Promises constructed above are the same. changes happen in the way they are consumed
+
+const getIDs = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve([523, 883, 432, 974]);
+            }, 1500);
+        });
+
+        const getRecipe = recID => {
+            return new Promise((resolve, reject) => {
+                setTimeout(ID => {
+                    const recipe = {
+                    title: 'Fresh tomato pasta',
+                    publisher: 'Jonas'
+                };
+                resolve(`${ID}: ${recipe.title}`);
+                }, 1500, recID); 
+            });
+        };
+
+        const getRelated = publisher => {
+            return new Promise((resolve, reject) => {
+                setTimeout(pub => {
+                    const recipe = {
+                        title: 'Italian Pizza',
+                        publisher: 'Jonas'
+                    };
+                    resolve(`${pub}: ${recipe.title}`);
+                }, 1500, publisher);
+            });
+        };
+/////////////// the changes happen below
+        async function getRecipesAW() {
+            const IDs = await getIDs;
+            console.log(IDs);  
+            const recipe = await getRecipe(IDs[2]);
+            console.log(recipe);
+            const related = await getRelated('Jonas');
+            console.log(related);
+        };
+        getRecipesAW();
+*/
+/*
+//////////////////////////////////////////////////////////
+// AJAX calls with Fetch and Promises
+// **Fetch returns a Promise**, so we can use .then and .catch to consume
+
+        function getWeather(woeid) {  // woeid = where on earth ID
+            fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${woeid}/`) // cors-anywhere just a workaround for this simple example.
+            .then(result => {
+                console.log(result);
+                return result.json();
+            })
+            .then(data => {
+                //console.log(data);
+                const today = data.consolidated_weather[0];
+                console.log(`Temperatures in ${data.title} stay between ${today.min_temp} and ${today.max_temp}.`);
+            })
+            .catch(error => console.log(error));
+        }
+        getWeather(2487956); // 2487956 is San Francisco and used for this example
+        getWeather(44418); // is london
+*/
+
+//////////////////////////////////////////////////////////
+// Fetch using Async Await  same as above but using newer async await
+
+        async function getWeatherAW(woeid) {
+            try {
+            const result = await fetch(`https://cors-anywhere.herokuapp.com/https://www.metaweather.com/api/location/${woeid}/`);
+            const data = await result.json();
+            const tomorrow = data.consolidated_weather[1];
+            console.log(`Temperatures tomorrow in ${data.title} stay between ${tomorrow.min_temp} and ${tomorrow.max_temp}.`);
+            return data;  // part of example to save data from api into our code
+            } catch(error) {
+                console.log(error);
+            }
+        }
+        getWeatherAW(2487956);
+        let dataLondon; // example to save data from api into our code
+        getWeatherAW(44418).then(data => {
+            dataLondon = data
+        console.log(dataLondon);
+        });
+
+        
     </script>
 </body>
 </html>
