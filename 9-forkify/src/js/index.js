@@ -13,15 +13,38 @@
 
 /////////////////////////////////////////////
 
-import axios from 'axios'; // solution that is better than fetch
+import Search from './models/Search';
 
-async function getResults(query) {
-    try {
-        const res = await axios(`https://forkify-api.herokuapp.com/api/search?q=${query}`); // '?' adds parameters, q is the query parameter. if another parameter, use & between parameters. you get parameters from the api documentation
-        const recipes = res.data.recipes;
-        console.log(recipes); 
-    } catch (error) {
-        alert(error);
+/** Global state of the app
+ * - Search object
+ * - Current recipe object
+ * - Shopping list object
+ * - Liked recipes
+ */
+const state = {};
+
+const controlSearch = async () => {
+    // 1- Get query from view
+    const query = 'pizza' //TODO
+
+    if (query) {
+        // 2- New search object and add to state
+        state.search = new Search(query);
+
+        // 3- Prepare UI fro results
+
+        // 4- Search for recipes
+        await state.search.getResults();
+
+        // 5- Render results on UI
+        console.log(state.search.result);
     }
 }
-getResults('pizza');
+
+document.querySelector('.search').addEventListener('submit', e => {
+    e.preventDefault();  // stops page reload on every search click
+    controlSearch();
+});
+
+
+search.getResults();
