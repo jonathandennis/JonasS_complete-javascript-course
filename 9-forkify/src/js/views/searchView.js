@@ -20,6 +20,14 @@ export const clearResults = () => {
     elements.searchResList.innerHTML = ''; // deletes inner HTML to clear list
     elements.searchResPages.innerHTML = '';
 };
+// to highlight selected recipe in list
+export const highlightSelected = id => {
+    const resultsArr = Array.from(document.querySelectorAll('.results__link'));
+    resultsArr.forEach(el => {
+        el.classList.remove('results__link--active');
+    });
+    document.querySelector(`.results__link[href*="${id}"]`).classList.add('results__link--active');
+};
 /*
 // 'Pasta with tomato and spinach' ILLUSTRATES CODE BELOW
 acc: 0 / acc + cur.length = 5 / newTitle = ['Pasta']
@@ -28,7 +36,7 @@ acc: 9 / acc + cur.length = 15 / newTitle = ['Pasta', 'with', 'tomato']
 acc: 15 / acc + cur.length = 18 / newTitle = ['Pasta', 'with', 'tomato']
 acc: 18 / acc + cur.length = 24 / newTitle = ['Pasta', 'with', 'tomato']
 */
-const limitRecipeTitle = (title, limit = 17) => {
+export const limitRecipeTitle = (title, limit = 17) => {
     const newTitle = [];
     if (title.length > limit) {
         title.split(' ').reduce((acc, cur) => { // reduce has acc built in making good use case for this purpose
@@ -61,6 +69,7 @@ const renderRecipe = recipe => { // rendering of recipe/s on website happens her
 };
 // renders actual button. Using template literals as just need to return mark up as button gets rendered in next function below. Making this seperate function to follow dry methodology 
 // using special 'data' attributes in HTML5 to store the page number (in Button class) to be used later (see button class) 
+// important to add data attribute( data-goto=${type === 'prev' ? page - 1 : page + 1} ) allows us to select items by their id.
 // type: 'prev' or 'next' 
 const createButton = (page, type) => `
     <button class="btn-inline results__btn--${type}" data-goto=${type === 'prev' ? page - 1 : page + 1}>  
