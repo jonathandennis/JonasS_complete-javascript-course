@@ -34,6 +34,7 @@ export default class Recipe {
     parseIngredients() {
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'lbs'];
+        const units = [...unitsShort, 'kg', 'g'];
 
         const newIngredients = this.ingredients.map(el => {  // .map to loop[ through the items]
             // 1 uniform units
@@ -66,7 +67,7 @@ export default class Recipe {
             objIng = {
                 count,  // in es6 means count = count
                 unit: arrIng[unitIndex],
-                ingredient: arrIng.slice(unitIndex + 1).join('')
+                ingredient: arrIng.slice(unitIndex + 1).join(' ')
             };
 
         } else if (parseInt(arrIng[0], 10)) {
@@ -81,11 +82,10 @@ export default class Recipe {
             // there is NO unit and NO number in first position
             objIng = {
                 count: 1,
-                unit: ',',
+                unit: '',
                 ingredient  
             }
         }
-
 
         return objIng;
     });
